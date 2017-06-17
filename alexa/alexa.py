@@ -5,6 +5,7 @@ For the full code sample visit https://github.com/pmckinney8/Alexa_Dojo_Skill.gi
 """
 
 from __future__ import print_function
+import requests
 
 
 def lambda_handler(event, context):
@@ -63,12 +64,18 @@ def on_intent(intent_request, session):
     # Dispatch to your skill's intent handlers
     if intent_name == "DrinkIntend":
         return get_drink_response(intent_request)
+    elif intent_name == "DrinkFinishedIntend":
+        return get_finished_drink(intent_request)
     elif intent_name == "CaffeineIntend":
         return get_caffeine(intent_request)
     elif intent_name == "AlcoholIntend":
         return get_alcohol(intent_request)
-    elif intent_name == "DrinkRecommendationIntend":
-        return get_drink_recommendation_response()
+    elif intent_name == "AlcoholIntend":
+        return get_alcohol(intent_request)
+    elif intent_name == "CaffeineLevelInted":
+        return get_caffeine_level()
+    elif intent_name == "AlcoholLevelIntend":
+        return get_alcohol_level()
     elif intent_name == "AMAZON.HelpIntent":
         return get_help_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
@@ -117,9 +124,22 @@ def get_drink_response(intent_request):
     session_attributes = {}
     card_title = "Drink response"
     drink = intent_request["intent"]["slots"]["Drink"]["value"]
+    requests.post("https://hpi.de/naumann/sites/ingestion/hackhpi/", data=drink)  # todo: specify serving (ml)
     speech_output = f"You need to drink more {drink} anyway."
     reprompt_text = speech_output
-    should_end_session = True
+    should_end_session = False
+    return build_response(session_attributes,
+                          build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+
+
+def get_finished_drink(intent_request):
+    session_attributes = {}
+    card_title = "Finished drink response"
+    drink = intent_request["intent"]["slots"]["Drink"]["value"]
+    requests.post("https://hpi.de/naumann/sites/ingestion/hackhpi/", data=f"{drink} finished")
+    speech_output = f"I hope your {drink} was tasty."
+    reprompt_text = speech_output
+    should_end_session = False
     return build_response(session_attributes,
                           build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
 
@@ -129,7 +149,7 @@ def get_drink_recommendation_response():
     card_title = "Drink recommendation response"
     speech_output = "You need to drink more beer."
     reprompt_text = speech_output
-    should_end_session = True
+    should_end_session = False
     return build_response(session_attributes,
                           build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
 
@@ -140,7 +160,7 @@ def get_caffeine(intent_request):
     drink = intent_request["intent"]["slots"]["Drink"]["value"]
     speech_output = f"{drink} contains a lot of caffeine."
     reprompt_text = speech_output
-    should_end_session = True
+    should_end_session = False
     return build_response(session_attributes,
                           build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
 
@@ -151,35 +171,34 @@ def get_alcohol(intent_request):
     drink = intent_request["intent"]["slots"]["Drink"]["value"]
     speech_output = f"{drink} contains a lot of alcohol."
     reprompt_text = speech_output
-    should_end_session = True
+    should_end_session = False
     return build_response(session_attributes,
                           build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
 
 
-def get_dojo_info_response():
+def get_caffeine_level():
     session_attributes = {}
-    card_title = "Dojo_Info"
-    speech_output = "The Coding Dojo is a 3 month immersive web developement bootcamp. During these 3 months you will learn 3 full web developement stacks. The stacks that we offer are... Django, Rails, Mean, IOS, and PHP."
-
+    card_title = "Caffeine level response"
+    speech_output = "Your caffeine level is over 9000."
     reprompt_text = speech_output
-    should_end_session = True
+    should_end_session = False
     return build_response(session_attributes,
                           build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
 
 
-def get_dojo_staff_response():
+def get_alcohol_level():
     session_attributes = {}
-    card_title = "Dojo_Staff"
-    speech_output = "The Coding Dojo has a number of instructors at different locations. Our current locations are San Jose, Seattle, Burbank, Dallas, Washington DC, and Chicago. If you want information about a particular location you can ask the Coding Dojo skill. So for example you can ask... who are the instructors at the Chicago location."
+    card_title = "Alcohol level response"
+    speech_output = "Your alcohol level is over 9000."
     reprompt_text = speech_output
-    should_end_session = True
+    should_end_session = False
     return build_response(session_attributes,
                           build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
 
 
 def handle_session_end_request():
     card_title = "Session Ended"
-    speech_output = "Thank you for using the Coding Dojo skill! We hope you enjoyed the experience."
+    speech_output = "Thank you for using the Productivity bot skill! We hope you enjoyed the experience."
     # Setting this to true ends the session and exits the skill.
     should_end_session = True
     return build_response({}, build_speechlet_response(
