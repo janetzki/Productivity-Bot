@@ -38,8 +38,6 @@ def caffeine_add():
 			caffeine_amount += caffeine_contents(drink, float(serving))
 		else:
 			caffeine_amount += caffeine_contents(drink)
-	else:
-		caffeine_amount += caffeine_contents('mate')
 	return ""
 
 @app.route("/caffeine/add/history")
