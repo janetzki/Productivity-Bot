@@ -1,0 +1,9 @@
+DrinkIntend I am drinking a {Drink}
+DrinkIntend I am drinking an {Drink}
+CaffeineIntend how much caffeine contains {Drink}
+CaffeineIntend how much caffeine is in {Drink}
+AlcoholIntend how much alcohol contains {Drink}
+AlcoholIntend how much alcohol is in {Drink}
+DrinkRecommendationIntend what shall I drink next
+DrinkRecommendationIntend I am thirsty
+DrinkRecommendationIntend I'm thirsty
