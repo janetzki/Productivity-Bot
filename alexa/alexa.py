@@ -68,7 +68,7 @@ def on_intent(intent_request, session):
     elif intent_name == "AlcoholIntend":
         return get_alcohol(intent_request)
     elif intent_name == "DrinkRecommendationIntend":
-        return get_drink_recommendation_response(intent_request)
+        return get_drink_recommendation_response()
     elif intent_name == "AMAZON.HelpIntent":
         return get_help_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
