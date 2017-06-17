@@ -4,6 +4,7 @@ import math
 
 caffeine_half_time_sec = 14400
 lambda_coeff = math.log(2) / caffeine_half_time_sec
+caffeine_history = []
 
 def reduced_caffeine(amount, time):
 	return amount * math.exp(-lambda_coeff * time)
@@ -26,7 +27,9 @@ def caffeine_for_drink(drink):
 
 def caffeine_contents(drink, serving_size = 500.0):
 	caffeine_per_100 = caffeine_for_drink(drink)
-	return caffeine_per_100 * serving_size / 100.0
+	amount = caffeine_per_100 * serving_size / 100.0
+	caffeine_history.add('"' + drink + '",' + serving_size + ',' + amount)
+	return amount
 
 if __name__ == "__main__":
 	if len(sys.argv) > 1:
