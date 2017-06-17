@@ -1,5 +1,12 @@
 import csv
 import sys
+import math
+
+caffeine_half_time_sec = 14400
+lambda_coeff = math.log(2) / caffeine_half_time_sec
+
+def reduced_caffeine(amount, time):
+	return amount * math.exp(-lambda_coeff * time)
 
 def caffeine_for_drink(drink):
 	# source http://koffein.com/
@@ -30,4 +37,7 @@ if __name__ == "__main__":
 		else:	
 			caffeine = caffeine_contents(drink)
 		print(caffeine)
+	if len(sys.argv) > 3:
+		time_delta = int(sys.argv[3])
+		print(reduced_caffeine(caffeine, time_delta))
 		
