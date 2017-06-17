@@ -5,6 +5,7 @@ import './LevelChart.css'
 
 var sidePadding = 30;
 var bottomPadding = 30;
+var dotRadius = 4;
 
 export default class LevelChart extends React.Component {
 
@@ -31,7 +32,7 @@ export default class LevelChart extends React.Component {
                 .range([0, this.w - 2 * sidePadding]);
 
         this.valueScale = d3.scale.linear()
-        		.domain([0.05, 0])
+        		.domain([0.1, 0])
         		.range([0, this.h - bottomPadding]);
 
         var xAxis = d3.svg.axis()
@@ -71,6 +72,19 @@ export default class LevelChart extends React.Component {
             .attr("font-size", 10)
             .attr("dy", "1em");
 
+        /*var valueline = d3.svg.line()
+            .x(function(d) { return this.timeScale(this.dateFormat.parse(d.time)); }.bind(this))
+            .y(function(d) { return this.valueScale(d.alcohol); }.bind(this));/**/
+
+        var valueline = d3.svg.line()
+            .x(function(d) { console.log(d.time); return this.timeScale(this.dateFormat.parse(d.time)) + sidePadding; }.bind(this))
+            .y(function(d) { console.log(d.alcohol); return this.valueScale(d.alcohol) - bottomPadding; }.bind(this));
+
+        this.svg.append("path")
+          //.data(csv)
+          .attr("class", "line")
+          .attr("d", valueline(csv));
+
         var dots = this.svg.append('g')
             .selectAll("rect")
             .data(csv)
@@ -80,17 +94,15 @@ export default class LevelChart extends React.Component {
             .attr("rx", 3)
             .attr("ry", 3)
             .attr("x", function(d) {
-                return this.timeScale(this.dateFormat.parse(d.time)) + sidePadding;
+                return this.timeScale(this.dateFormat.parse(d.time)) + sidePadding - dotRadius / 2;
             }.bind(this))
             .attr("y", function(d, i) {
                 console.log(d.alcohol);
-                return this.valueScale(d.alcohol);
+                return this.valueScale(d.alcohol) - bottomPadding - dotRadius / 2;
                 //return this.valueScale(d.alcohol);
             }.bind(this))
-            .attr("width", function(d) {
-                return 5;
-            })
-            .attr("height", 5)
+            .attr("width", dotRadius)
+            .attr("height", dotRadius)
             .attr("stroke", "none")
             .attr("fill", "#ff0000");
 
