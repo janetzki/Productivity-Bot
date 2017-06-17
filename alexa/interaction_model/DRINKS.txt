@@ -1,3 +1,7 @@
+Beer
+Wine
+Coffee
+Mate
 Afri Cola
 Club Mate
 Coca-Cola
