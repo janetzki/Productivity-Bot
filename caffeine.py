@@ -11,7 +11,11 @@ def caffeine_for_drink(drink):
 	if amount != None:
 		return float(amount)
 	else:
-		return 0.0
+		contains_matches = [value for key, value in caffeine_dict.items() if drink in key]
+		if len(contains_matches) > 0:
+			return max(contains_matches)
+		else:
+			return 0.0
 
 def caffeine_contents(drink, serving_size = 500.0):
 	caffeine_per_100 = caffeine_for_drink(drink)
