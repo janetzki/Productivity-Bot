@@ -1,0 +1,46 @@
+{
+  "intents": [
+    {
+      "intent": "AMAZON.ResumeIntent"
+    },
+    {
+      "intent": "AMAZON.PauseIntent"
+    },
+    {
+      "intent": "DrinkIntend",
+      "slots": [
+        {
+          "name": "Drink",
+          "type": "DRINKS"
+        }
+      ]
+    },
+	{
+      "intent": "CaffeineIntend",
+      "slots": [
+        {
+          "name": "Drink",
+          "type": "DRINKS"
+        }
+      ]
+    },
+	{
+      "intent": "AlcoholIntend",
+      "slots": [
+        {
+          "name": "Drink",
+          "type": "DRINKS"
+        }
+      ]
+    },
+	{
+      "intent": "DrinkRecommendationIntend"
+	},
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    }
+  ]
+}
