@@ -31,7 +31,7 @@ export default class LevelChart extends React.Component {
                 .range([0, this.w - 2 * sidePadding]);
 
         this.valueScale = d3.scale.linear()
-        		.domain([0, 0.5])
+        		.domain([0.05, 0])
         		.range([0, this.h - bottomPadding]);
 
         var xAxis = d3.svg.axis()
@@ -70,6 +70,29 @@ export default class LevelChart extends React.Component {
             .attr("stroke", "none")
             .attr("font-size", 10)
             .attr("dy", "1em");
+
+        var dots = this.svg.append('g')
+            .selectAll("rect")
+            .data(csv)
+            .enter();
+
+        var innerRects = dots.append("rect")
+            .attr("rx", 3)
+            .attr("ry", 3)
+            .attr("x", function(d) {
+                return this.timeScale(this.dateFormat.parse(d.time)) + sidePadding;
+            }.bind(this))
+            .attr("y", function(d, i) {
+                console.log(d.alcohol);
+                return this.valueScale(d.alcohol);
+                //return this.valueScale(d.alcohol);
+            }.bind(this))
+            .attr("width", function(d) {
+                return 5;
+            })
+            .attr("height", 5)
+            .attr("stroke", "none")
+            .attr("fill", "#ff0000");
 
         this.forceUpdate();
 	}
