@@ -5,6 +5,7 @@ For the full code sample visit https://github.com/pmckinney8/Alexa_Dojo_Skill.gi
 """
 
 from __future__ import print_function
+import requests
 
 
 def lambda_handler(event, context):
@@ -117,6 +118,7 @@ def get_drink_response(intent_request):
     session_attributes = {}
     card_title = "Drink response"
     drink = intent_request["intent"]["slots"]["Drink"]["value"]
+    requests.post("https://hpi.de/naumann/sites/ingestion/hackhpi/", data=drink) # todo: specify serving (ml)
     speech_output = f"You need to drink more {drink} anyway."
     reprompt_text = speech_output
     should_end_session = True
