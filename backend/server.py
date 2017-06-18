@@ -18,11 +18,15 @@ minutes = 360
 alcoholicDrinks = []
 
 
-@app.route("/alcohol/add")
+@app.route("/alcohol/add", methods=['GET', 'POST'])
 def alcohol_add():
-    # drink = request.form['drink']
+    if "drink" in request.json:
+        drink = request.json["drink"]
+        drinkVol = 500.0
+        if "serving" in request.json:
+            serving = request.json["serving"]
+            drinkVol = float(serving)
     drink = "Bier"
-    drinkVol = 500.0
     drinkTime = datetime.now()
     alcoholicDrinks.append((drink, drinkVol, drinkTime))
     return ""
@@ -82,16 +86,16 @@ def last_valid_drink(query_time):
             return last_valid
     return last_valid
 
-@app.route("/caffeine/add")
+@app.route("/caffeine/add", methods=['GET', 'POST'])
 def caffeine_add():
     global caffeine_amount, last_caffeine_time, server_caffeine_amount
     difference = second_difference(datetime.now())
     caffeine_amount = reduced_caffeine(caffeine_amount, difference)
     server_caffeine_amount = caffeine_amount
-    if "drink" in request.form:
-        drink = request.form["drink"]
-        if "serving" in request.form:
-            serving = request.form["serving"]
+    if "drink" in request.json:
+        drink = request.json["drink"]
+        if "serving" in request.json:
+            serving = request.json["serving"]
             caffeine_amount += caffeine_contents(drink, float(serving))
         else:
             caffeine_amount += caffeine_contents(drink)

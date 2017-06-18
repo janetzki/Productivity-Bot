@@ -14,7 +14,7 @@ def reduced_caffeine(amount, time):
 def caffeine_for_drink(drink):
     # source http://koffein.com/
     caffeine_dict = {}
-    with open('caffeine_contents.csv', newline='\n') as csvfile:
+    with open('backend/caffeine_contents.csv', newline='\n') as csvfile:
         for row in csv.reader(csvfile, delimiter=',', quotechar='"'):
             caffeine_dict[row[0].lower()] = float(row[1])
     amount = caffeine_dict.get(drink)
