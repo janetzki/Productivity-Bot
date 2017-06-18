@@ -7,6 +7,11 @@ lambda_coeff = math.log(2) / caffeine_half_time_sec
 caffeine_history = []
 caffeine_amount = 0.0
 
+
+def time_till_nth(n):
+    return math.log(n) / lambda_coeff
+
+
 def reduced_caffeine(amount, time):
     return amount * math.exp(-lambda_coeff * time)
 
