@@ -1,9 +1,11 @@
 Beer
 Wine
+Shot
+Vodka
 Coffee
-Mate
+Mah-teh
 Afri Cola
-Club Mate
+Club Mah-teh
 Coca-Cola
 Coca-Cola Cherry
 Coca-Cola Light

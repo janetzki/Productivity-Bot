@@ -45,7 +45,7 @@ def last_valid_alc_drink(query_time):
     last_valid = {}
     last_valid["total_alcohol"] = 0.0
     last_valid["timestamp"] = query_time
-    for entry in sorted(alcoholic_drinks, key=lambda hist: hist["timestamp"])::
+    for entry in sorted(alcoholic_drinks, key=lambda hist: hist["timestamp"]):
         diff = (query_time - entry["timestamp"]).total_seconds()
         if diff >= 0:
             last_valid = entry
