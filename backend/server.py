@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 from caffeine import caffeine_contents, reduced_caffeine, caffeine_history, caffeine_amount, time_till_nth
 from flask import Flask, request, jsonify
 from mock_history import caffeine_mock_history, alcohol_mock_history
+import time
+from operator import itemgetter
 app = Flask(__name__)
 
 minutes_past = 1337
@@ -29,7 +31,7 @@ def last_valid_drink(query_time):
     last_valid = {}
     last_valid["total_caffeine"] = 0.0
     last_valid["timestamp"] = query_time
-    for entry in caffeine_history:
+    for entry in sorted(caffeine_history, key=lambda hist: hist["timestamp"]):
         diff = (query_time - entry["timestamp"]).total_seconds()
         if diff >= 0:
             last_valid = entry
@@ -43,7 +45,7 @@ def last_valid_alc_drink(query_time):
     last_valid = {}
     last_valid["total_alcohol"] = 0.0
     last_valid["timestamp"] = query_time
-    for entry in alcoholic_drinks:
+    for entry in sorted(alcoholic_drinks, key=lambda hist: hist["timestamp"])::
         diff = (query_time - entry["timestamp"]).total_seconds()
         if diff >= 0:
             last_valid = entry
