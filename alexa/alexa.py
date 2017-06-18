@@ -70,8 +70,6 @@ def on_intent(intent_request, session):
         return get_caffeine(intent_request)
     elif intent_name == "AlcoholIntend":
         return get_alcohol(intent_request)
-    elif intent_name == "AlcoholIntend":
-        return get_alcohol(intent_request)
     elif intent_name == "DrinkRecommendationIntend":
         return get_drink_recommendation_response()
     elif intent_name == "CaffeineLevelIntend":
