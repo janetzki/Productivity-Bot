@@ -11,9 +11,10 @@ AlcoholIntend how much alcohol contains {Drink}
 AlcoholIntend how much alcohol contains a {Drink}
 AlcoholIntend how much alcohol contains an {Drink}
 AlcoholIntend how much alcohol is in {Drink}
-DrinkRecommendationIntend what shall I drink next
-DrinkRecommendationIntend I am thirsty
-DrinkRecommendationIntend I'm thirsty
+CaffeineRecommendationIntend I need some caffeine
+CaffeineRecommendationIntend I'm tired
+AlcoholRecommendationIntend I am thirsty
+AlcoholRecommendationIntend I'm thirsty
 CaffeineLevelIntend what is my caffeine level
 CaffeineLevelIntend what's my caffeine level
 CaffeineLevelIntend how high is my caffeine level
@@ -22,13 +23,13 @@ AlcoholLevelIntend what's my alcohol level
 AlcoholLevelIntend how high is my alcohol level
 SexIntend I am {Sex}
 SexIntend I'm {Sex}
-BodyweightIntend My weight is {Number} kilograms
-BodyweightIntend My weight is {Number} kilos
-AgeIntend I am {Number} years old
-AgeIntend I'm {Number} years old
-AgeIntend I am {Number} years
-AgeIntend I'm {Number} years
-AgeIntend I am {Number}
-AgeIntend I'm {Number}
-AgeIntend My age is {Number} years
-AgeIntend My age is {Number}
+BodyweightIntend My weight is {Amount} kilograms
+BodyweightIntend My weight is {Amount} kilos
+AgeIntend I am {Amount} years old
+AgeIntend I'm {Amount} years old
+AgeIntend I am {Amount} years
+AgeIntend I'm {Amount} years
+AgeIntend I am {Amount}
+AgeIntend I'm {Amount}
+AgeIntend My age is {Amount} years
+AgeIntend My age is {Amount}

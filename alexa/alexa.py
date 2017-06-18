@@ -77,8 +77,10 @@ def on_intent(intent_request, session):
         return get_caffeine(intent_request)
     elif intent_name == "AlcoholIntend":
         return get_alcohol(intent_request)
-    elif intent_name == "DrinkRecommendationIntend":
-        return get_drink_recommendation_response()
+    elif intent_name == "CaffeineRecommendationIntend":
+        return get_caffeine_recommendation()
+    elif intent_name == "AlcoholRecommendationIntend":
+        return get_alcohol_recommendation()
     elif intent_name == "CaffeineLevelIntend":
         return get_caffeine_level()
     elif intent_name == "AlcoholLevelIntend":
@@ -113,7 +115,7 @@ def on_session_ended(session_ended_request, session):
 def get_welcome_response():
     session_attributes = {}
     card_title = "Welcome"
-    speech_output = "Welcome to the Productivity Bot. I will help you stay in your Barmer Peak."
+    speech_output = "Welcome to the Productivity Bot. I will help you stay in your Ballmer Peak."
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with the same text.
     reprompt_text = speech_output
@@ -139,7 +141,7 @@ def get_drink_response(intent_request):
     drink = intent_request["intent"]["slots"]["Drink"]["value"]
     requests.post(caffeine_url, json={"drink": drink})  # todo: specify serving (ml)
     requests.post(alcohol_url, json={"drink": drink})  # todo: specify serving (ml)
-    speech_output = f"You need to drink more {drink} anyway."
+    speech_output = f"Enjoy your {drink}."
     reprompt_text = speech_output
     should_end_session = False
     return build_response(session_attributes,
@@ -158,10 +160,21 @@ def get_finished_drink(intent_request):
                           build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
 
 
-def get_drink_recommendation_response():
+def get_caffeine_recommendation():
     session_attributes = {}
-    card_title = "Drink recommendation response"
-    json_answer = requests.get(recommendation_url).text
+    card_title = "Caffeine recommendation response"
+    json_answer = requests.get(caffeine_recommendation_url).text
+    speech_output = json.loads(json_answer)["results"]
+    reprompt_text = speech_output
+    should_end_session = False
+    return build_response(session_attributes,
+                          build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+
+
+def get_alcohol_recommendation():
+    session_attributes = {}
+    card_title = "Alcohol recommendation response"
+    json_answer = requests.get(alcohol_recommendation_url).text
     speech_output = json.loads(json_answer)["results"]
     reprompt_text = speech_output
     should_end_session = False
@@ -249,7 +262,7 @@ def set_age(intent_request):
 
 def handle_session_end_request():
     card_title = "Session Ended"
-    speech_output = "Thank you for using the Productivity bot skill! We hope you enjoyed the experience."
+    speech_output = "Thank you for using the Productivity bot! I hope you were productive."
     # Setting this to true ends the session and exits the skill.
     should_end_session = True
     return build_response({}, build_speechlet_response(
