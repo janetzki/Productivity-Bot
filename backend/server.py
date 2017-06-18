@@ -9,20 +9,22 @@ app = Flask(__name__)
 
 minutes_past = 1337
 minutes_future = 300
-last_caffeine_time = datetime.now() - timedelta(hours=24)
-last_drink = datetime.now() - timedelta(hours=24)
+last_caffeine_time = datetime.now() - timedelta(hours=48)
+last_drink = datetime.now() - timedelta(hours=48)
 
-def second_difference(current_time):
+def second_difference(current_time, update=False):
     global last_caffeine_time
     difference = (current_time - last_caffeine_time).total_seconds()
-    last_caffeine_time = current_time
+    if update:
+        last_caffeine_time = current_time
     return difference
 
 
-def second_difference_alc(current_time):
+def second_difference_alc(current_time, update=False):
     global last_drink
     difference = (current_time - last_drink).total_seconds()
-    last_drink = current_time
+    if update:
+        last_drink = current_time
     return difference
 
 
@@ -76,7 +78,7 @@ def alcohol_add(mock_input=None):
         add_time = datetime.strptime(req["timestamp"], "%a, %d %b %Y %H:%M:%S %Z")
     else:
         add_time = datetime.now()
-    difference = second_difference_alc(add_time)
+    difference = second_difference_alc(add_time, True)
     alcohol_amount = reduced_bac(alcohol_amount, difference)
     if req != None and "drink" in req:
         drink = req["drink"]
@@ -165,7 +167,7 @@ def caffeine_add(mock_input=None):
         add_time = datetime.strptime(req["timestamp"], "%a, %d %b %Y %H:%M:%S %Z")
     else:
         add_time = datetime.now()
-    difference = second_difference(add_time)
+    difference = second_difference(add_time, True)
     caffeine_amount = reduced_caffeine(caffeine_amount, difference)
     if req != None and "drink" in req:
         drink = req["drink"]
@@ -211,19 +213,19 @@ def caffeine_recommendation():
     upper_thresh = 250.0
     current_caffeine = reduced_caffeine(caffeine_amount, second_difference(datetime.now()))
     response = ""
-    if caffeine_amount < 1.0:
+    if current_caffeine < 1.0:
         response = "You better start drinking mate. You need at least one mate to reach the sweet spot."
-    elif caffeine_amount < lower_thresh:
-        needed_max = (upper_thresh - caffeine_amount) / 100.0
+    elif current_caffeine < lower_thresh:
+        needed_max = (upper_thresh - current_caffeine) / 100.0
         if 100.0 * int(needed_max) >= lower_thresh:
             needed_mate = int(needed_max)
         else:
             needed_mate = int(needed_max) + 1
         response = "You need to drink up to %d more mate to reach the sweet spot." % needed_mate
-    elif caffeine_amount < upper_thresh:
+    elif current_caffeine < upper_thresh:
         response = "You did it! Start being productive."
     else:
-        nth_particles = int(caffeine_amount / lower_thresh)
+        nth_particles = int(current_caffeine / lower_thresh)
         needed_time = int(time_till_nth(nth_particles) / 60.0)
         response = "Are you trembling yet? You should wait at least %d minutes until you drink a mate again." % needed_time
     return jsonify(results=response)
