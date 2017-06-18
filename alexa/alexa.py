@@ -11,7 +11,8 @@ import json
 alcohol_url = "https://hpi.de/naumann/sites/ingestion/hackhpi/alcohol/add"
 caffeine_url = "https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/add"
 profile_url = "https://hpi.de/naumann/sites/ingestion/hackhpi/alcohol/setprofile"
-recommendation_url = "https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/recommendation"
+caffeine_recommendation_url = "https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/recommendation"
+alcohol_recommendation_url = "https://hpi.de/naumann/sites/ingestion/hackhpi/alcohol/recommendation"
 
 
 def lambda_handler(event, context):
@@ -136,8 +137,8 @@ def get_drink_response(intent_request):
     session_attributes = {}
     card_title = "Drink response"
     drink = intent_request["intent"]["slots"]["Drink"]["value"]
-    requests.post(caffeine_url, data={"drink": drink})  # todo: specify serving (ml)
-    requests.post(alcohol_url, data={"drink": drink})  # todo: specify serving (ml)
+    requests.post(caffeine_url, json={"drink": drink})  # todo: specify serving (ml)
+    requests.post(alcohol_url, json={"drink": drink})  # todo: specify serving (ml)
     speech_output = f"You need to drink more {drink} anyway."
     reprompt_text = speech_output
     should_end_session = False
@@ -149,7 +150,7 @@ def get_finished_drink(intent_request):
     session_attributes = {}
     card_title = "Finished drink response"
     drink = intent_request["intent"]["slots"]["Drink"]["value"]
-    # requests.post("https://hpi.de/naumann/sites/ingestion/hackhpi/", data={"drink finished": drink})
+    # requests.post("https://hpi.de/naumann/sites/ingestion/hackhpi/", json={"drink finished": drink})
     speech_output = f"I hope your {drink} was tasty."
     reprompt_text = speech_output
     should_end_session = False
@@ -214,7 +215,7 @@ def set_sex(intent_request):
     session_attributes = {}
     card_title = "Sex response"
     sex = intent_request["intent"]["slots"]["Sex"]["value"]
-    requests.post(profile_url, data={"sex": sex})
+    requests.post(profile_url, json={"sex": sex})
     speech_output = f"Yes, you are so {sex}."
     reprompt_text = speech_output
     should_end_session = False
@@ -226,7 +227,7 @@ def set_bodyweight(intent_request):
     session_attributes = {}
     card_title = "Bodyweight response"
     weight = intent_request["intent"]["slots"]["Number"]["value"]
-    requests.post(profile_url, data={"bodyweight": weight})
+    requests.post(profile_url, json={"bodyweight": weight})
     speech_output = f"A bodyweight of {weight} is just perfect!"
     reprompt_text = speech_output
     should_end_session = False
@@ -238,7 +239,7 @@ def set_age(intent_request):
     session_attributes = {}
     card_title = "Age response"
     age = intent_request["intent"]["slots"]["Number"]["value"]
-    requests.post(profile_url, data={"age": age})
+    requests.post(profile_url, json={"age": age})
     speech_output = f"I am less than {age} years old."
     reprompt_text = speech_output
     should_end_session = False
