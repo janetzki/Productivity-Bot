@@ -1,6 +1,8 @@
 DrinkIntend I am drinking {Drink}
 DrinkIntend I am drinking a {Drink}
 DrinkIntend I am drinking an {Drink}
+DrinkIntend I am drinking another {Drink}
+DrinkIntend I am drinking my next {Drink}
 DrinkFinishedIntend I finished drinking
 DrinkFinishedIntend I finished my {Drink}
 CaffeineIntend how much caffeine contains {Drink}
@@ -23,13 +25,7 @@ AlcoholLevelIntend what's my alcohol level
 AlcoholLevelIntend how high is my alcohol level
 SexIntend I am {Sex}
 SexIntend I'm {Sex}
-BodyweightIntend My weight is {Amount} kilograms
-BodyweightIntend My weight is {Amount} kilos
-AgeIntend I am {Amount} years old
-AgeIntend I'm {Amount} years old
-AgeIntend I am {Amount} years
-AgeIntend I'm {Amount} years
-AgeIntend I am {Amount}
-AgeIntend I'm {Amount}
-AgeIntend My age is {Amount} years
-AgeIntend My age is {Amount}
+BodyweightIntend my weight is {Number} kilograms
+BodyweightIntend my weight is {Number} kilos
+BodyweightIntend I weight {Number} kilograms
+BodyweightIntend I weight {Number} kilos
