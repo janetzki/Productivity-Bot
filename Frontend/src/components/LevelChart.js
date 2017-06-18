@@ -1,6 +1,9 @@
 import React from 'react'
 import d3 from 'd3'
 
+import TimerMixin from 'react-timer-mixin';
+var reactMixin = require('react-mixin');
+
 import './LevelChart.css'
 
 var sidePadding = 30;
@@ -10,13 +13,22 @@ var caffeineData = [];
 var alcoholData = [];
 
 var gridOpacity = 0.2;
-var caffeineColor = "#c00";
-var alcoholColor = "#0c0";
+var caffeineColor = "#c22";
+var alcoholColor = "#2c2";
 
 export default class LevelChart extends React.Component {
 
 	constructor(props){
 		super(props);
+
+        this.setInterval(this.tick, 1000);
+
+        this.tick();
+
+	}
+
+    tick(){
+        //console.log("tick");
 
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/chart',
             function(err, data) {
@@ -31,8 +43,15 @@ export default class LevelChart extends React.Component {
                 this.readCSV();
             }.bind(this)
         );
-
-	}
+        
+        this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/alcohol/history',
+            function(err, data) {
+                //alcoholData = data.results;
+                //this.readCSV();
+                //console.log(data);
+            }.bind(this)
+        );
+    }
 
 	readCSV(){
 
@@ -187,3 +206,5 @@ export default class LevelChart extends React.Component {
         );
     }
 }
+
+reactMixin(LevelChart.prototype, TimerMixin);
