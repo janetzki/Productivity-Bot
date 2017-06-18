@@ -20,7 +20,9 @@ var caffeineColor = "#c22";
 var alcoholColor = "#2c2";
 
 var caffeineLUT = [    
-    ["mate", require("./../images/mate.svg")]
+    ["mate", require("./../images/mate.svg")],
+    ["tee", require("./../images/tea.svg")],
+    ["monster energy", require("./../images/energy_drink.svg")]
 ];
 var alcoholLUT = [
     ["bier", require("./../images/beer.svg")],
@@ -37,7 +39,7 @@ export default class LevelChart extends React.Component {
 	constructor(props){
 		super(props);
 
-        this.setInterval(this.tick, 1000);
+        //this.setInterval(this.tick, 1000);
 
         this.tick();
 
@@ -63,6 +65,7 @@ export default class LevelChart extends React.Component {
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/history',
             function(err, data) {
                 caffeineHistory = data.results;
+                console.log(data);
                 this.readCSV();
             }.bind(this)
         );
@@ -220,6 +223,13 @@ export default class LevelChart extends React.Component {
             }.bind(this))
             .attr("width", iconSize)
             .attr("height", iconSize);
+
+        this.svg.append("rect")
+            .attr("width", 2)
+            .attr("height", this.h - 2 * bottomPadding)
+            .attr("fill", "#00f")
+            .attr("x", this.timeScale(Date.now()) + sidePadding)
+            .attr("y", 0);
 
         this.forceUpdate();
 	}
