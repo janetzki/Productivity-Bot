@@ -10,6 +10,7 @@ caffeine_amount = 0.0
 def reduced_caffeine(amount, time):
     return amount * math.exp(-lambda_coeff * time)
 
+
 def caffeine_for_drink(drink):
     # source http://koffein.com/
     caffeine_dict = {}
@@ -27,18 +28,18 @@ def caffeine_for_drink(drink):
             return 0.0
 
 
-def caffeine_contents(drink, serving_size = 500.0):
+def caffeine_contents(drink, current_time, serving_size = 500.0):
     global caffeine_amount
+    print('adding drink %s with size %f' % (drink, serving_size))
     caffeine_per_100 = caffeine_for_drink(drink.lower())
     amount = caffeine_per_100 * serving_size / 100.0
-    current_time = datetime.now()
     if len(caffeine_history) > 0:
         last_element = caffeine_history[-1]
         diff = (current_time - last_element["timestamp"]).total_seconds()
         caffeine_amount = reduced_caffeine(caffeine_amount, diff)
     caffeine_amount += amount
     history_object = {}
-    history_object["drink"] = drink
+    history_object["drink"] = drink.lower()
     history_object["serving"] = serving_size
     history_object["caffeine"] = amount
     history_object["total_caffeine"] = caffeine_amount

@@ -12,18 +12,22 @@ waterPercent = {'male': 0.7, 'female': 0.6 }
 def water():
     return float(profile["weight"]) * float(waterPercent[profile["sex"]])
 
+
 def set_profile(request):
     profile["age"] = request["age"]
     profile["sex"] = request["sex"]
     profile["weight"] = request["weight"]
+
 
 def calculate_bac(alc_drink, vol_drink):
     alc = alc_drink * 0.78924 * vol_drink / 100
     alc_blood = (alc / water()) * 100
     return alc_blood
 
+
 def reduced_bac(bac, seconds):
     return max(0, bac - 0.15 * (seconds / 3600.0))
+
 
 def alcohol_for_drink(drink):
     drink_alc_vol = {}
@@ -40,10 +44,10 @@ def alcohol_for_drink(drink):
         else:
             return 0.0
 
-def alcohol_contents(drink, serving):
+
+def alcohol_contents(drink, serving, current_time):
     global alcohol_amount
     alc_vol = alcohol_for_drink(drink.lower())
-    current_time = datetime.now()
     amount = calculate_bac(alc_vol, serving)
     if len(alcoholic_drinks) > 0:
         last_element = alcoholic_drinks[-1]
@@ -51,7 +55,7 @@ def alcohol_contents(drink, serving):
         alcohol_amount = reduced_bac(alcohol_amount, diff)
     alcohol_amount += amount
     history_object = {}
-    history_object["drink"] = drink
+    history_object["drink"] = drink.lower()
     history_object["serving"] = serving
     history_object["alcohol_volume"] = alc_vol
     history_object["alcohol"] = amount
