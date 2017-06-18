@@ -32,17 +32,17 @@ var caffeineRange = [0, 500];
 
 var caffeineLUT = [    
     ["mate", require("./../images/mate.svg")],
-    ["tee", require("./../images/tea.svg")],
+    ["tea", require("./../images/tea.svg")],
     ["monster energy", require("./../images/energy_drink.svg")]
 ];
 var alcoholLUT = [
-    ["bier", require("./../images/beer.svg")],
-    ["wein", require("./../images/wine.svg")],
-    ["sekt", require("./../images/wine.svg")],
-    ["likör", require("./../images/wine.svg")],
+    ["beer", require("./../images/beer.svg")],
+    ["wine", require("./../images/wine.svg")],
+    ["sect", require("./../images/wine.svg")],
+    ["liquor", require("./../images/wine.svg")],
     ["rum", require("./../images/wine.svg")],
     ["schnaps", require("./../images/wine.svg")],
-    ["wodka", require("./../images/wine.svg")]
+    ["vodka", require("./../images/wine.svg")]
 ];
 
 export default class LevelChart extends React.Component {
@@ -50,14 +50,14 @@ export default class LevelChart extends React.Component {
 	constructor(props){
 		super(props);
 
-        this.setInterval(this.tick, 250);
+        this.setInterval(this.tick, 1000);
 
         this.tick();
 
 	}
 
     tick(){
-        console.log("tick");
+        //console.log("tick");
 
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/chart',
             function(err, data) {
@@ -76,6 +76,11 @@ export default class LevelChart extends React.Component {
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/history',
             function(err, data) {
                 caffeineHistory = data.results;
+                if(caffeineHistory.length > 0)
+                    while((new Date(caffeineHistory[0].timestamp)).getTime() < (new Date(caffeineData[0])).getTime()){
+                        caffeineHistory.shift();
+                    }
+
                 this.readCSV();
             }.bind(this)
         );
@@ -83,6 +88,11 @@ export default class LevelChart extends React.Component {
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/alcohol/history',
             function(err, data) {
                 alcoholHistory = data.results;
+                if(alcoholHistory.length > 0)
+                    while((new Date(alcoholHistory[0].timestamp)) < (new Date(alcoholData[0]))){
+                        alcoholHistory.shift();
+                    }
+                //console.log(alcoholHistory);
                 this.readCSV();
             }.bind(this)
         );

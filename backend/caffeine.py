@@ -35,7 +35,6 @@ def caffeine_for_drink(drink):
 
 def caffeine_contents(drink, current_time, serving_size = 500.0):
     global caffeine_amount
-    print('adding drink %s with size %f' % (drink, serving_size))
     caffeine_per_100 = caffeine_for_drink(drink.lower())
     amount = caffeine_per_100 * serving_size / 100.0
     if amount == 0.0:

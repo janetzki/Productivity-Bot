@@ -1,2 +1,2 @@
-# HackHPI-2017
-A project for the HackHPI 2017 hackathon
+# ProductivityBot
+Tell Alexa which beverages you are consuming. According to your weight and sex the ProductivityBot will calculate your ideal level of alcohol and caffeine, and "help you stay in you ballmer peak". Alexa will tell you your alcohol and caffeine level and give recommendations which beverages to consume to reach your ideal productivity level. Besides the voice feedback, your caffeine and alcohol level is depicted in a chart on a JS-website over time.
