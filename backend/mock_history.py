@@ -30,15 +30,15 @@ alcohol_mock_history = {
 
 caffeine_mock_history = {
   "results": [
-    {
-      "drink": "mate",
-      "serving": 500.0,
-      "timestamp": "Sat, 17 Jun 2017 11:22:33 GMT"
-    },
      {
       "drink": "tea",
       "serving": 330.0,
       "timestamp": "Sat, 17 Jun 2017 09:38:23 GMT"
+    },
+    {
+      "drink": "mate",
+      "serving": 500.0,
+      "timestamp": "Sat, 17 Jun 2017 11:22:33 GMT"
     },
     {
       "drink": "mate",

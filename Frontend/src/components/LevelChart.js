@@ -87,14 +87,13 @@ export default class LevelChart extends React.Component {
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/history',
             function(err, data) {
                 caffeineHistory = data.results;
-                if(caffeineHistory.length > 0)
-                    while((new Date(caffeineHistory[0].timestamp)).getTime() < (new Date(caffeineData[0])).getTime()){
-                        caffeineHistory.shift();
-                    }
-
                 caffeineHistory.forEach(function(d){
                     d.timestamp = (new Date(d.timestamp)).addHours(-2);
                 });
+                if(caffeineHistory.length > 0)
+                    while((new Date(caffeineHistory[0].timestamp)).getTime() < (new Date(caffeineData[0][0])).getTime()){
+                        caffeineHistory.shift();
+                    }
                 this.readCSV();
             }.bind(this)
         );
@@ -102,14 +101,13 @@ export default class LevelChart extends React.Component {
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/alcohol/history',
             function(err, data) {
                 alcoholHistory = data.results;
+                alcoholHistory.forEach(function(d){
+                    d.timestamp = (new Date(d.timestamp)).addHours(-2);
+                });
                 if(alcoholHistory.length > 0)
                     while((new Date(alcoholHistory[0].timestamp)) < (new Date(alcoholData[0]))){
                         alcoholHistory.shift();
                     }
-                alcoholHistory.forEach(function(d){
-                    d.timestamp = (new Date(d.timestamp)).addHours(-2);
-                });
-                //console.log(alcoholHistory);
                 this.readCSV();
             }.bind(this)
         );
