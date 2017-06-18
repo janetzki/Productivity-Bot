@@ -52,6 +52,33 @@
       "intent": "AlcoholLevelIntend"
     },
     {
+      "intent": "SexIntend",
+      "slots": [
+        {
+          "name": "Sex",
+          "type": "SEX"
+        }
+      ]
+    },
+    {
+      "intent": "BodyweightIntend",
+      "slots": [
+        {
+          "name": "Number",
+          "type": "NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "AgeIntend",
+      "slots": [
+        {
+          "name": "Number",
+          "type": "NUMBER"
+        }
+      ]
+    },
+    {
       "intent": "AMAZON.HelpIntent"
     },
     {

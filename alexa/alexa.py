@@ -5,7 +5,13 @@ For the full code sample visit https://github.com/pmckinney8/Alexa_Dojo_Skill.gi
 """
 
 from __future__ import print_function
-#import requests
+import requests
+import json
+
+alcohol_url = "https://hpi.de/naumann/sites/ingestion/hackhpi/alcohol/add"
+caffeine_url = "https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/add"
+profile_url = "https://hpi.de/naumann/sites/ingestion/hackhpi/alcohol/setprofile"
+recommendation_url = "https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/recommendation"
 
 
 def lambda_handler(event, context):
@@ -76,6 +82,12 @@ def on_intent(intent_request, session):
         return get_caffeine_level()
     elif intent_name == "AlcoholLevelIntend":
         return get_alcohol_level()
+    elif intent_name == "SexIntend":
+        return set_sex(intent_request)
+    elif intent_name == "BodyweightIntend":
+        return set_bodyweight(intent_request)
+    elif intent_name == "AgeIntend":
+        return set_age(intent_request)
     elif intent_name == "AMAZON.HelpIntent":
         return get_help_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
@@ -124,7 +136,8 @@ def get_drink_response(intent_request):
     session_attributes = {}
     card_title = "Drink response"
     drink = intent_request["intent"]["slots"]["Drink"]["value"]
-    #requests.post("https://hpi.de/naumann/sites/ingestion/hackhpi/", data=drink)  # todo: specify serving (ml)
+    requests.post(caffeine_url, data={"drink": drink})  # todo: specify serving (ml)
+    requests.post(alcohol_url, data={"drink": drink})  # todo: specify serving (ml)
     speech_output = f"You need to drink more {drink} anyway."
     reprompt_text = speech_output
     should_end_session = False
@@ -136,7 +149,7 @@ def get_finished_drink(intent_request):
     session_attributes = {}
     card_title = "Finished drink response"
     drink = intent_request["intent"]["slots"]["Drink"]["value"]
-    #requests.post("https://hpi.de/naumann/sites/ingestion/hackhpi/", data=f"{drink} finished")
+    # requests.post("https://hpi.de/naumann/sites/ingestion/hackhpi/", data={"drink finished": drink})
     speech_output = f"I hope your {drink} was tasty."
     reprompt_text = speech_output
     should_end_session = False
@@ -147,7 +160,8 @@ def get_finished_drink(intent_request):
 def get_drink_recommendation_response():
     session_attributes = {}
     card_title = "Drink recommendation response"
-    speech_output = "You need to drink more beer."
+    json_answer = requests.get(recommendation_url).text
+    speech_output = json.loads(json_answer)["results"]
     reprompt_text = speech_output
     should_end_session = False
     return build_response(session_attributes,
@@ -190,6 +204,42 @@ def get_alcohol_level():
     session_attributes = {}
     card_title = "Alcohol level response"
     speech_output = "Your alcohol level is over 9000."
+    reprompt_text = speech_output
+    should_end_session = False
+    return build_response(session_attributes,
+                          build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+
+
+def set_sex(intent_request):
+    session_attributes = {}
+    card_title = "Sex response"
+    sex = intent_request["intent"]["slots"]["Sex"]["value"]
+    requests.post(profile_url, data={"sex": sex})
+    speech_output = f"Yes, you are so {sex}."
+    reprompt_text = speech_output
+    should_end_session = False
+    return build_response(session_attributes,
+                          build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+
+
+def set_bodyweight(intent_request):
+    session_attributes = {}
+    card_title = "Bodyweight response"
+    weight = intent_request["intent"]["slots"]["Number"]["value"]
+    requests.post(profile_url, data={"bodyweight": weight})
+    speech_output = f"A bodyweight of {weight} is just perfect!"
+    reprompt_text = speech_output
+    should_end_session = False
+    return build_response(session_attributes,
+                          build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+
+
+def set_age(intent_request):
+    session_attributes = {}
+    card_title = "Age response"
+    age = intent_request["intent"]["slots"]["Number"]["value"]
+    requests.post(profile_url, data={"age": age})
+    speech_output = f"I am less than {age} years old."
     reprompt_text = speech_output
     should_end_session = False
     return build_response(session_attributes,
