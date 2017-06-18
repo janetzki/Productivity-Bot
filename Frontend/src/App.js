@@ -5,7 +5,7 @@ import LevelChart from './components/LevelChart'
 
 const App = () => (
     <div>
-    	<h1>Kotz-O-Meter</h1>
+    	<h1>Productivity Monitor</h1>
 		<LevelChart />
     </div>
 );

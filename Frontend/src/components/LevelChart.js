@@ -8,27 +8,56 @@ import './LevelChart.css'
 
 var sidePadding = 30;
 var bottomPadding = 30;
-var dotRadius = 4;
+var iconSize = 20;
 var caffeineData = [];
 var alcoholData = [];
 
+var caffeineHistory = [];
+var alcoholHistory = [];
+
 var gridOpacity = 0.2;
-var caffeineColor = "#c22";
+var caffeineColor = "#22c";
 var alcoholColor = "#2c2";
+
+var optimalCaffeineLevel = [100, 250];
+var optimalAlcoholLevel = [1.29, 1.38];
+
+/*var m = (optimalCaffeineLevel[0]-optimalCaffeineLevel[1])/(optimalAlcoholLevel[0]-optimalAlcoholLevel[1]);
+var n = optimalCaffeineLevel[0]-m*optimalAlcoholLevel[0];
+var alcoholRange = [0, 3];
+var caffeineRange = [m*alcoholRange[0]+n, m*alcoholRange[1]+n];*/
+
+var alcoholRange = [0, 3];
+var caffeineRange = [0, 500];
+
+var caffeineLUT = [    
+    ["mate", require("./../images/mate.svg")],
+    ["tee", require("./../images/tea.svg")],
+    ["monster energy", require("./../images/energy_drink.svg")]
+];
+var alcoholLUT = [
+    ["bier", require("./../images/beer.svg")],
+    ["wein", require("./../images/wine.svg")],
+    ["sekt", require("./../images/wine.svg")],
+    ["likör", require("./../images/wine.svg")],
+    ["rum", require("./../images/wine.svg")],
+    ["schnaps", require("./../images/wine.svg")],
+    ["wodka", require("./../images/wine.svg")]
+];
 
 export default class LevelChart extends React.Component {
 
 	constructor(props){
 		super(props);
 
-        this.setInterval(this.tick, 1000);
+        this.setInterval(this.tick, 250);
 
         this.tick();
 
 	}
 
     tick(){
-        //console.log("tick");
+        console.log("tick");
 
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/chart',
             function(err, data) {
@@ -44,19 +73,25 @@ export default class LevelChart extends React.Component {
             }.bind(this)
         );
         
+        this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/history',
+            function(err, data) {
+                caffeineHistory = data.results;
+                this.readCSV();
+            }.bind(this)
+        );
+        
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/alcohol/history',
             function(err, data) {
-                //alcoholData = data.results;
-                //this.readCSV();
-                //console.log(data);
+                alcoholHistory = data.results;
+                this.readCSV();
             }.bind(this)
         );
     }
 
 	readCSV(){
 
-		this.w = this.refs.chartContainer.offsetWidth;
-		this.h = 300;
+		this.w = this.refs.chartContainer.offsetWidth-2;
+		this.h = this.refs.chartContainer.offsetHeight-20;
 
         d3.selectAll("svg > *").remove();
         var chart = this.refs.levelChart;
@@ -68,12 +103,36 @@ export default class LevelChart extends React.Component {
                 .range([0, this.w - 2 * sidePadding]);
 
         this.caffeineScale = d3.scale.linear()
-                .domain([500, 0])
-                .range([0, this.h - bottomPadding]);
+                .domain(caffeineRange)
+                .range([this.h - bottomPadding, 0]);
 
         this.alcoholScale = d3.scale.linear()
-                .domain([3, 0])
-                .range([0, this.h - bottomPadding]);
+                .domain(alcoholRange)
+                .range([this.h - bottomPadding, 0]);
+
+        /*this.svg.append("rect")
+            .attr("width", this.w - 2 * sidePadding)
+            .attr("height", this.alcoholScale(optimalAlcoholLevel[0])-this.alcoholScale(optimalAlcoholLevel[1]))
+            .attr("fill", "#0f0")
+            .attr("opacity", 0.1)
+            .attr("x", sidePadding)
+            .attr("y", this.alcoholScale(optimalAlcoholLevel[1]) - bottomPadding);*/
+
+        this.svg.append("rect")
+            .attr("width", this.w - 2 * sidePadding)
+            .attr("height", this.alcoholScale(optimalAlcoholLevel[0])-this.alcoholScale(optimalAlcoholLevel[1]))
+            .attr("fill", alcoholColor)
+            .attr("opacity", 0.1)
+            .attr("x", sidePadding)
+            .attr("y", this.alcoholScale(optimalAlcoholLevel[1]) - bottomPadding);
+
+        this.svg.append("rect")
+            .attr("width", this.w - 2 * sidePadding)
+            .attr("height", this.caffeineScale(optimalCaffeineLevel[0])-this.caffeineScale(optimalCaffeineLevel[1]))
+            .attr("fill", caffeineColor)
+            .attr("opacity", 0.1)
+            .attr("x", sidePadding)
+            .attr("y", this.caffeineScale(optimalCaffeineLevel[1]) - bottomPadding);
 
         var xAxis = d3.svg.axis()
             .scale(this.timeScale)
@@ -96,11 +155,11 @@ export default class LevelChart extends React.Component {
         var yAxisCaffeine = d3.svg.axis()
             .scale(this.caffeineScale)
             .orient('left')
-            .tickSize(this.w - 2 * sidePadding, 0);
+            .tickSize(10/*this.w - 2 * sidePadding/**/, 0);
 
         var yAxisCaffeineEntries = this.svg.append('g')
             .attr('class', 'caffeineGrid')
-            .attr('transform', 'translate(' + (this.w - sidePadding) + ', ' + -bottomPadding + ')')
+            .attr('transform', 'translate(' + (sidePadding) + ', ' + -bottomPadding + ')')
             .call(yAxisCaffeine);
 
         yAxisCaffeineEntries.selectAll("line")
@@ -109,7 +168,7 @@ export default class LevelChart extends React.Component {
 
         yAxisCaffeineEntries.selectAll("text")
             .style("text-anchor", "middle")
-            .attr('transform', 'translate(' + -10 + ', ' + -8 + ')')
+            .attr('transform', 'translate(' + -8 + ', ' + -8 + ')')
             .attr("fill", caffeineColor)
             .attr("stroke", "none")
             .attr("font-size", 10)
@@ -118,11 +177,11 @@ export default class LevelChart extends React.Component {
         var yAxisAlcohol = d3.svg.axis()
             .scale(this.alcoholScale)
             .orient('right')
-            .tickSize(this.w - 2 * sidePadding, 0);
+            .tickSize(10/*this.w - 2 * sidePadding/**/, 0);
 
         var yAxisAlcoholEntries = this.svg.append('g')
             .attr('class', 'grid')
-            .attr('transform', 'translate(' + sidePadding + ', ' + -sidePadding + ')')
+            .attr('transform', 'translate(' + (this.w - sidePadding) + ', ' + -sidePadding + ')')
             .call(yAxisAlcohol);
 
         yAxisAlcoholEntries.selectAll("line")
@@ -136,10 +195,6 @@ export default class LevelChart extends React.Component {
             .attr("stroke", "none")
             .attr("font-size", 10)
             .attr("dy", "1em");
-
-        /*var valueline = d3.svg.line()
-            .x(function(d) { return this.timeScale(this.dateFormat.parse(d.time)); }.bind(this))
-            .y(function(d) { return this.valueScale(d.alcohol); }.bind(this));/**/
 
         var caffeineLine = d3.svg.line()
             .x(function(d) { return this.timeScale(new Date(d[0])) + sidePadding; }.bind(this))
@@ -159,25 +214,56 @@ export default class LevelChart extends React.Component {
           .attr("d", alcoholLine(alcoholData))
           .attr("stroke", alcoholColor);
 
-        /*var dots = this.svg.append('g')
+        var caffeineIcons = this.svg.append('g')
             .selectAll("rect")
-            .data(csv)
+            .data(caffeineHistory)
             .enter();
 
-        dots.append("rect")
-            .attr("rx", 3)
-            .attr("ry", 3)
+        caffeineIcons.append("image")
+            .attr("xlink:href", function(d){
+                    var src = "";
+                    caffeineLUT.forEach(function(lutEntry){
+                        if(lutEntry[0] == d.drink) src = lutEntry[1];
+                    }.bind(this))
+                    return src;
+                }.bind(this))
             .attr("x", function(d) {
-                return this.timeScale(new Date(d[0])) + sidePadding - dotRadius / 2;
+                return this.timeScale(new Date(d.timestamp)) + sidePadding - iconSize / 2;
             }.bind(this))
             .attr("y", function(d, i) {
-                return this.valueScale(d[1]) - bottomPadding - dotRadius / 2;
-                //return this.valueScale(d.alcohol);
+                return this.caffeineScale(d.total_caffeine) - bottomPadding - iconSize / 2;
             }.bind(this))
-            .attr("width", dotRadius)
-            .attr("height", dotRadius)
-            .attr("stroke", "none")
-            .attr("fill", "#ff0000");*/
+            .attr("width", iconSize)
+            .attr("height", iconSize);
+
+        var alcoholIcons = this.svg.append('g')
+            .selectAll("rect")
+            .data(alcoholHistory)
+            .enter();
+
+        alcoholIcons.append("image")
+            .attr("xlink:href", function(d){
+                    var src = "";
+                    alcoholLUT.forEach(function(lutEntry){
+                        if(lutEntry[0] == d.drink) src = lutEntry[1];
+                    }.bind(this))
+                    return src;
+                }.bind(this))
+            .attr("x", function(d) {
+                return this.timeScale(new Date(d.timestamp)) + sidePadding - iconSize / 2;
+            }.bind(this))
+            .attr("y", function(d, i) {
+                return this.alcoholScale(d.total_alcohol) - bottomPadding - iconSize / 2;
+            }.bind(this))
+            .attr("width", iconSize)
+            .attr("height", iconSize);
+
+        this.svg.append("rect")
+            .attr("width", 2)
+            .attr("height", this.h - 2 * bottomPadding)
+            .attr("fill", "#f4b342")
+            .attr("x", this.timeScale(Date.now()) + sidePadding)
+            .attr("y", 0);
 
         this.forceUpdate();
 	}
@@ -197,11 +283,11 @@ export default class LevelChart extends React.Component {
         xhr.send();
     }
 
-
+    //<svg id="levelChart" ref="levelChart"  width={ this.w } height={ this.h } />
 	render() {
         return (
             <div id="chartContainer" ref="chartContainer">
-            	<svg id="levelChart" ref="levelChart"  width={ this.w } height={ this.h } />
+                <svg id="levelChart" ref="levelChart"  width={ this.w } height={ this.h } />
             </div>
         );
     }

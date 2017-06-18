@@ -19,7 +19,7 @@ def set_profile(request):
     profile["weight"] = request["weight"]
 
 
-def calculate_bac(alc_drink, vol_drink):
+def calculate_bac(alc_drink=0.05, vol_drink=330):
     alc = alc_drink * 0.78924 * vol_drink / 100
     alc_blood = (alc / water()) * 100
     return alc_blood
@@ -45,11 +45,12 @@ def alcohol_for_drink(drink):
             return 0.0
 
 
-def alcohol_contents(drink, serving):
+def alcohol_contents(drink, serving, current_time):
     global alcohol_amount
     alc_vol = alcohol_for_drink(drink.lower())
-    current_time = datetime.now()
     amount = calculate_bac(alc_vol, serving)
+    if amount == 0.0:
+        return 0.0
     if len(alcoholic_drinks) > 0:
         last_element = alcoholic_drinks[-1]
         diff = (current_time - last_element["timestamp"]).total_seconds()
