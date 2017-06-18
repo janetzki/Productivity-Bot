@@ -1,11 +1,12 @@
-Beer
-Wine
-Shot
-Vodka
-Coffee
-Mah-teh
+beer
+wine
+sect
+liquor
+rum
+schnaps
+vodka
 Afri Cola
-Club Mah-teh
+Club Mate
 Coca-Cola
 Coca-Cola Cherry
 Coca-Cola Light
@@ -26,11 +27,11 @@ Tonic Water
 Water Joe
 Cappuccino
 Espresso
-Kaffee
+coffee
 Latte Macchiato
-Grüner Tee
-Schwarzer Tee
-Weißer Tee
+green tea
+black tea
+white tea
 Action Energy Shot
 Burn Energy Shot
 Flying Power Energyshot
@@ -38,7 +39,7 @@ Go fast! Energy Shot
 Red Bull Energy Shot
 Relentless Energy Shot
 Take off Energy Shot
-Übershot
+Ãœbershot
 Action Cola Energy
 Action Energy Drink
 Action Juiced Energy
@@ -147,7 +148,7 @@ Rockstar Punched
 Rockstar Recovery
 Rockstar Zero Sugar
 Scallen Power Energy Drink
-Scenatic – The Energizer
+Scenatic â€“ The Energizer
 Schwarze Dose 28 (28 Black)
 Semtex
 Sexergy
@@ -157,7 +158,7 @@ Sexergy Peach Tangerine
 Shark Energy Drink
 Slammers Energy Drink
 Storm H20 + Coffein
-Ständer
+StÃ¤nder
 T400 Energy
 Torfabrik Energy
 Tunnel Energy Drink
@@ -165,6 +166,6 @@ V-Power Energy Drink
 Watt Natura
 Watt Original
 Wei-Wasser Energy Drink
-Weiße Dose 28 (28 White)
+WeiÃŸe Dose 28 (28 White)
 XL Energy Drink
 Yaipur
