@@ -2,7 +2,6 @@ from alcohol import calculate_bac, alcohol_amount, set_profile, reduced_bac, alc
 from datetime import datetime, timedelta
 from caffeine import caffeine_contents, reduced_caffeine, caffeine_history, caffeine_amount, time_till_nth
 from flask import Flask, request, jsonify
-import requests
 from mock_history import caffeine_mock_history, alcohol_mock_history
 app = Flask(__name__)
 
