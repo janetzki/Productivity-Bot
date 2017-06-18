@@ -7,8 +7,8 @@ import time
 from operator import itemgetter
 app = Flask(__name__)
 
-minutes_past = 1337
-minutes_future = 300
+minutes_past = 1800
+minutes_future = 600
 last_caffeine_time = datetime.now() - timedelta(hours=48)
 last_drink = datetime.now() - timedelta(hours=48)
 
