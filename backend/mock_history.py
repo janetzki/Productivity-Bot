@@ -1,27 +1,27 @@
 alcohol_mock_history = {
   "results": [
     {
-      "drink": "bier",
+      "drink": "beer",
       "serving": 333.0,
       "timestamp": "Sat, 17 Jun 2017 18:04:38 GMT"
     },
     {
-      "drink": "bier",
+      "drink": "beer",
       "serving": 333.0,
       "timestamp": "Sat, 17 Jun 2017 19:10:31 GMT"
     },
     {
-      "drink": "bier",
+      "drink": "beer",
       "serving": 333.0,
       "timestamp": "Sat, 17 Jun 2017 20:30:38 GMT"
     },
     {
-      "drink": "bier",
+      "drink": "beer",
       "serving": 333.0,
       "timestamp": "Sat, 17 Jun 2017 22:25:31 GMT"
     },
     {
-      "drink": "bier",
+      "drink": "beer",
       "serving": 333.0,
       "timestamp": "Sat, 17 Jun 2017 23:44:38 GMT"
     }
@@ -31,14 +31,14 @@ alcohol_mock_history = {
 caffeine_mock_history = {
   "results": [
     {
-      "drink": "tee",
-      "serving": 330.0,
-      "timestamp": "Sat, 17 Jun 2017 09:38:23 GMT"
-    },
-    {
       "drink": "mate",
       "serving": 500.0,
       "timestamp": "Sat, 17 Jun 2017 11:22:33 GMT"
+    },
+     {
+      "drink": "tea",
+      "serving": 330.0,
+      "timestamp": "Sat, 17 Jun 2017 09:38:23 GMT"
     },
     {
       "drink": "mate",
@@ -46,7 +46,7 @@ caffeine_mock_history = {
       "timestamp": "Sat, 17 Jun 2017 13:34:49 GMT"
     },
     {
-      "drink": "tee",
+      "drink": "tea",
       "serving": 330.0,
       "timestamp": "Sat, 17 Jun 2017 17:22:23 GMT"
     },

@@ -43,13 +43,43 @@
       ]
     },
 	{
-      "intent": "DrinkRecommendationIntend"
+      "intent": "CaffeineRecommendationIntend"
+    },
+	{
+      "intent": "AlcoholRecommendationIntend"
     },
     {
       "intent": "CaffeineLevelIntend"
     },
     {
       "intent": "AlcoholLevelIntend"
+    },
+    {
+      "intent": "SexIntend",
+      "slots": [
+        {
+          "name": "Sex",
+          "type": "SEX"
+        }
+      ]
+    },
+    {
+      "intent": "BodyweightIntend",
+      "slots": [
+        {
+          "name": "Amount",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "AgeIntend",
+      "slots": [
+        {
+          "name": "Amount",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
     },
     {
       "intent": "AMAZON.HelpIntent"
