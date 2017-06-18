@@ -12,15 +12,18 @@ export default class LevelChart extends React.Component {
 	constructor(props){
 		super(props);
 
-		d3.csv("/data/test.csv", this.readCSV.bind(this));
+        this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/chart',
+            function(err, data) {
+                this.readCSV(data.results);
+            }.bind(this)
+        );
 	}
 
 	readCSV(csv){
 		console.log(csv);
 
-		this.w = 800;
+		this.w = this.refs.chartContainer.offsetWidth;
 		this.h = 300;
-
 
         d3.selectAll("svg > *").remove();
         var chart = this.refs.levelChart;
@@ -28,11 +31,11 @@ export default class LevelChart extends React.Component {
 
         this.dateFormat = d3.time.format("%H:%M");
         this.timeScale = d3.time.scale()
-                .domain([this.dateFormat.parse(csv[0].time), this.dateFormat.parse(csv[csv.length-1].time)])
+                .domain([new Date(csv[0][0]), new Date(csv[csv.length-1][0])])
                 .range([0, this.w - 2 * sidePadding]);
 
         this.valueScale = d3.scale.linear()
-        		.domain([0.1, 0])
+        		.domain([500, 0])
         		.range([0, this.h - bottomPadding]);
 
         var xAxis = d3.svg.axis()
@@ -77,8 +80,8 @@ export default class LevelChart extends React.Component {
             .y(function(d) { return this.valueScale(d.alcohol); }.bind(this));/**/
 
         var valueline = d3.svg.line()
-            .x(function(d) { console.log(d.time); return this.timeScale(this.dateFormat.parse(d.time)) + sidePadding; }.bind(this))
-            .y(function(d) { console.log(d.alcohol); return this.valueScale(d.alcohol) - bottomPadding; }.bind(this));
+            .x(function(d) { return this.timeScale(new Date(d[0])) + sidePadding; }.bind(this))
+            .y(function(d) { return this.valueScale(d[1]) - bottomPadding; }.bind(this));
 
         this.svg.append("path")
           //.data(csv)
@@ -94,11 +97,11 @@ export default class LevelChart extends React.Component {
             .attr("rx", 3)
             .attr("ry", 3)
             .attr("x", function(d) {
-                return this.timeScale(this.dateFormat.parse(d.time)) + sidePadding - dotRadius / 2;
+                return this.timeScale(new Date(d[0])) + sidePadding - dotRadius / 2;
             }.bind(this))
             .attr("y", function(d, i) {
-                console.log(d.alcohol);
-                return this.valueScale(d.alcohol) - bottomPadding - dotRadius / 2;
+                console.log(d[1]);
+                return this.valueScale(d[1]) - bottomPadding - dotRadius / 2;
                 //return this.valueScale(d.alcohol);
             }.bind(this))
             .attr("width", dotRadius)
@@ -109,10 +112,25 @@ export default class LevelChart extends React.Component {
         this.forceUpdate();
 	}
 
+    getJSON(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'json';
+        xhr.onload = function() {
+          var status = xhr.status;
+          if (status == 200) {
+            callback(null, xhr.response);
+          } else {
+            callback(status);
+          }
+        };
+        xhr.send();
+    }
+
 
 	render() {
         return (
-            <div id="chartContainer">
+            <div id="chartContainer" ref="chartContainer">
             	<svg id="levelChart" ref="levelChart"  width={ this.w } height={ this.h } />
             </div>
         );
