@@ -49,6 +49,8 @@ def alcohol_contents(drink, serving, current_time):
     global alcohol_amount
     alc_vol = alcohol_for_drink(drink.lower())
     amount = calculate_bac(alc_vol, serving)
+    if amount == 0.0:
+        return 0.0
     if len(alcoholic_drinks) > 0:
         last_element = alcoholic_drinks[-1]
         diff = (current_time - last_element["timestamp"]).total_seconds()

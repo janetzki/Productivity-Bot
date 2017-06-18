@@ -7,6 +7,11 @@ lambda_coeff = math.log(2) / caffeine_half_time_sec
 caffeine_history = []
 caffeine_amount = 0.0
 
+
+def time_till_nth(n):
+    return math.log(n) / lambda_coeff
+
+
 def reduced_caffeine(amount, time):
     return amount * math.exp(-lambda_coeff * time)
 
@@ -33,6 +38,8 @@ def caffeine_contents(drink, current_time, serving_size = 500.0):
     print('adding drink %s with size %f' % (drink, serving_size))
     caffeine_per_100 = caffeine_for_drink(drink.lower())
     amount = caffeine_per_100 * serving_size / 100.0
+    if amount == 0.0:
+        return 0.0
     if len(caffeine_history) > 0:
         last_element = caffeine_history[-1]
         diff = (current_time - last_element["timestamp"]).total_seconds()

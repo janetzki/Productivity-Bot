@@ -1,8 +1,7 @@
 from alcohol import calculate_bac, alcohol_amount, set_profile, reduced_bac, alcoholic_drinks, alcohol_contents, profile
 from datetime import datetime, timedelta
-from caffeine import caffeine_contents, reduced_caffeine, caffeine_history, caffeine_amount
+from caffeine import caffeine_contents, reduced_caffeine, caffeine_history, caffeine_amount, time_till_nth
 from flask import Flask, request, jsonify
-import requests
 from mock_history import caffeine_mock_history, alcohol_mock_history
 app = Flask(__name__)
 
@@ -200,5 +199,29 @@ def caffeine_chart():
         chart.append([delta_t, reduced_caffeine(last_valid["total_caffeine"], diff)])
     return jsonify(results=chart)
 
+
+@app.route("/caffeine/recommendation")
+def caffeine_recommendation():
+    global caffeine_amount
+    lower_thresh = 100.0
+    upper_thresh = 250.0
+    current_caffeine = reduced_caffeine(caffeine_amount, second_difference(datetime.now()))
+    response = ""
+    if caffeine_amount < 1.0:
+        response = "You better start drinking mate. You need at least one mate to reach the sweet spot."
+    elif caffeine_amount < lower_thresh:
+        needed_max = (upper_thresh - caffeine_amount) / 100.0
+        if 100.0 * int(needed_max) >= lower_thresh:
+            needed_mate = int(needed_max)
+        else:
+            needed_mate = int(needed_max) + 1
+        response = "You need to drink up to %d more mate to reach the sweet spot." % needed_mate
+    elif caffeine_amount < upper_thresh:
+        response = "You did it! Start being productive."
+    else:
+        nth_particles = int(caffeine_amount / lower_thresh)
+        needed_time = int(time_till_nth(nth_particles) / 60.0)
+        response = "Are you trembling yet? You should wait at least %d minutes until you drink a mate again." % needed_time
+    return jsonify(results=response)
 
 app.run(debug=True)
