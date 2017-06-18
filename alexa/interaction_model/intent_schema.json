@@ -15,6 +15,15 @@
         }
       ]
     },
+    {
+      "intent": "DrinkFinishedIntend",
+      "slots": [
+        {
+          "name": "Drink",
+          "type": "DRINKS"
+        }
+      ]
+    },
 	{
       "intent": "CaffeineIntend",
       "slots": [
@@ -35,7 +44,13 @@
     },
 	{
       "intent": "DrinkRecommendationIntend"
-	},
+    },
+    {
+      "intent": "CaffeineLevelIntend"
+    },
+    {
+      "intent": "AlcoholLevelIntend"
+    },
     {
       "intent": "AMAZON.HelpIntent"
     },

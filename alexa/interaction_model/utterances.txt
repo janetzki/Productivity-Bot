@@ -1,9 +1,20 @@
+DrinkIntend I am drinking {Drink}
 DrinkIntend I am drinking a {Drink}
 DrinkIntend I am drinking an {Drink}
+DrinkFinishedIntend I finished drinking
+DrinkFinishedIntend I finished my {Drink}
 CaffeineIntend how much caffeine contains {Drink}
+CaffeineIntend how much caffeine contains a {Drink}
+CaffeineIntend how much caffeine contains an {Drink}
 CaffeineIntend how much caffeine is in {Drink}
 AlcoholIntend how much alcohol contains {Drink}
+AlcoholIntend how much alcohol contains a {Drink}
+AlcoholIntend how much alcohol contains an {Drink}
 AlcoholIntend how much alcohol is in {Drink}
 DrinkRecommendationIntend what shall I drink next
 DrinkRecommendationIntend I am thirsty
 DrinkRecommendationIntend I'm thirsty
+CaffeineLevelIntend what is my caffeine level
+CaffeineLevelIntend how high is my caffeine level
+AlcoholLevelIntend what is my alcohol level
+AlcoholLevelIntend how high is my alcohol level
