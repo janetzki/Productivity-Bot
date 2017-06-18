@@ -6,7 +6,8 @@ import requests
 from mock_history import caffeine_mock_history, alcohol_mock_history
 app = Flask(__name__)
 
-minutes = 360
+minutes_past = 1337
+minutes_future = 300
 last_caffeine_time = datetime.now() - timedelta(hours=24)
 last_drink = datetime.now() - timedelta(hours=24)
 
@@ -87,10 +88,10 @@ def alcohol_add(mock_input=None):
 
 @app.route("/alcohol/chart")
 def alcohol_chart():
-    global minutes, alcoholic_drinks
+    global minutes_past, minutes_future, alcoholic_drinks
     current_time = datetime.now()
     chart = []
-    for minute in range(-minutes, minutes + 1):
+    for minute in range(-minutes_past, minutes_future + 1):
         delta_t = current_time + timedelta(minutes=minute)
         last_valid = last_valid_alc_drink(delta_t)
         diff = (delta_t - last_valid["timestamp"]).total_seconds()
@@ -157,10 +158,10 @@ def caffeine_add_mock_history():
 
 @app.route("/caffeine/chart")
 def caffeine_chart():
-    global minutes, reduced_caffeine, caffeine_history
+    global minutes_past, minutes_future, reduced_caffeine, caffeine_history
     current_time = datetime.now()
     chart = []
-    for minute in range(-minutes, minutes + 1):
+    for minute in range(-minutes_past, minutes_future + 1):
         delta_t = current_time + timedelta(minutes=minute)
         last_valid = last_valid_drink(delta_t)
         diff = (delta_t - last_valid["timestamp"]).total_seconds()
