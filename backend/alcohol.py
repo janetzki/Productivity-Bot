@@ -19,7 +19,7 @@ def set_profile(request):
     profile["weight"] = request["weight"]
 
 
-def calculate_bac(alc_drink, vol_drink):
+def calculate_bac(alc_drink=0.05, vol_drink=330):
     alc = alc_drink * 0.78924 * vol_drink / 100
     alc_blood = (alc / water()) * 100
     return alc_blood

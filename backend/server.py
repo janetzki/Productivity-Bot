@@ -118,6 +118,38 @@ def alcohol_profile():
     global profile
     return jsonify(results=profile)
 
+@app.route("/alcohol/recommendation")
+def alcohol_recommendation():
+    global alcohol_amount
+    lower = 1.29
+    upper = 1.38
+    current_time = datetime.now()
+    current_alcohol = reduced_bac(alcohol_amount, second_difference_alc(current_time))
+    response = ""
+    if current_alcohol == 0.0:
+        response += "You should better start drinking if you wanna hit the balmer peak and be more productive"
+        if int(current_time.strftime('%H')) < 16:
+            response += ". Maybe it is a bit early but hey it is your liver."
+    elif current_alcohol + calculate_bac() < lower:
+        if current_alcohol + calculate_bac() > upper:
+            minutes = (upper - current_alcohol - calculate_bac())/-0.15*60
+            response += "You are one beer away from hitting the ballmer peak if you start drinking in %d minutes you will get the most benefits." % int(minutes)
+        else:
+            count = (lower - current_alcohol)/calculate_bac()
+            if count <= 1:
+                minutes = ((upper - current_alcohol - calculate_bac())/-0.15)*60
+                response += "You are almost there. Drink your next beer in %d minutes to get in the zone." % int(minutes)
+            elif count < 2:
+                response += "You are about 1 beer away from hitting the ballmer peak to be most productive."
+            else:
+                response += "You are %d beers away from hitting the ballmer peak to be most productive." % int(count)
+    elif current_alcohol < upper and current_alcohol > lower:
+        minutes = (upper - current_alcohol - calculate_bac())/-0.15*60
+        response += "You are in the ballmer peak you should be most productive right know so start being productive drink your next beer in %d minutes to stay in the zone." % int(minutes)
+    elif current_alcohol > upper:
+        minutes = (upper - current_alcohol)/-0.15*60
+        response += "Well you already ahead of the ballmer peak you can wait %d minutes and enter the ballmer peak or start partying." % int(minutes)
+    return jsonify(results=response)
 
 @app.route("/caffeine/add", methods=['GET', 'POST'])
 def caffeine_add(mock_input=None):
