@@ -5,7 +5,7 @@ For the full code sample visit https://github.com/pmckinney8/Alexa_Dojo_Skill.gi
 """
 
 from __future__ import print_function
-import requests
+#import requests
 
 
 def lambda_handler(event, context):
@@ -72,7 +72,9 @@ def on_intent(intent_request, session):
         return get_alcohol(intent_request)
     elif intent_name == "AlcoholIntend":
         return get_alcohol(intent_request)
-    elif intent_name == "CaffeineLevelInted":
+    elif intent_name == "DrinkRecommendationIntend":
+        return get_drink_recommendation_response()
+    elif intent_name == "CaffeineLevelIntend":
         return get_caffeine_level()
     elif intent_name == "AlcoholLevelIntend":
         return get_alcohol_level()
@@ -124,7 +126,7 @@ def get_drink_response(intent_request):
     session_attributes = {}
     card_title = "Drink response"
     drink = intent_request["intent"]["slots"]["Drink"]["value"]
-    requests.post("https://hpi.de/naumann/sites/ingestion/hackhpi/", data=drink)  # todo: specify serving (ml)
+    #requests.post("https://hpi.de/naumann/sites/ingestion/hackhpi/", data=drink)  # todo: specify serving (ml)
     speech_output = f"You need to drink more {drink} anyway."
     reprompt_text = speech_output
     should_end_session = False
@@ -136,7 +138,7 @@ def get_finished_drink(intent_request):
     session_attributes = {}
     card_title = "Finished drink response"
     drink = intent_request["intent"]["slots"]["Drink"]["value"]
-    requests.post("https://hpi.de/naumann/sites/ingestion/hackhpi/", data=f"{drink} finished")
+    #requests.post("https://hpi.de/naumann/sites/ingestion/hackhpi/", data=f"{drink} finished")
     speech_output = f"I hope your {drink} was tasty."
     reprompt_text = speech_output
     should_end_session = False
