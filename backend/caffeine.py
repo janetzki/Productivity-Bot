@@ -1,5 +1,4 @@
 import csv
-import sys
 import math
 from datetime import datetime
 
@@ -30,7 +29,7 @@ def caffeine_for_drink(drink):
 
 def caffeine_contents(drink, serving_size = 500.0):
     global caffeine_amount
-    caffeine_per_100 = caffeine_for_drink(drink)
+    caffeine_per_100 = caffeine_for_drink(drink.lower())
     amount = caffeine_per_100 * serving_size / 100.0
     current_time = datetime.now()
     if len(caffeine_history) > 0:
@@ -46,16 +45,3 @@ def caffeine_contents(drink, serving_size = 500.0):
     history_object["timestamp"] = current_time
     caffeine_history.append(history_object)
     return amount
-
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        drink = sys.argv[1].lower()
-        if len(sys.argv) > 2:
-            serving = float(sys.argv[2])
-            caffeine = caffeine_contents(drink, serving)
-        else:
-            caffeine = caffeine_contents(drink)
-        print(caffeine)
-    if len(sys.argv) > 3:
-        time_delta = int(sys.argv[3])
-        print(reduced_caffeine(caffeine, time_delta))
