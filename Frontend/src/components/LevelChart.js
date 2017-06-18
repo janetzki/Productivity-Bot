@@ -6,6 +6,12 @@ import './LevelChart.css'
 var sidePadding = 30;
 var bottomPadding = 30;
 var dotRadius = 4;
+var caffeineData = [];
+var alcoholData = [];
+
+var gridOpacity = 0.2;
+var caffeineColor = "#c00";
+var alcoholColor = "#0c0";
 
 export default class LevelChart extends React.Component {
 
@@ -14,13 +20,21 @@ export default class LevelChart extends React.Component {
 
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/chart',
             function(err, data) {
-                this.readCSV(data.results);
+                caffeineData = data.results;
+                this.readCSV();
             }.bind(this)
         );
+        
+        this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/alcohol/chart',
+            function(err, data) {
+                alcoholData = data.results;
+                this.readCSV();
+            }.bind(this)
+        );
+
 	}
 
-	readCSV(csv){
-		console.log(csv);
+	readCSV(){
 
 		this.w = this.refs.chartContainer.offsetWidth;
 		this.h = 300;
@@ -31,12 +45,16 @@ export default class LevelChart extends React.Component {
 
         this.dateFormat = d3.time.format("%H:%M");
         this.timeScale = d3.time.scale()
-                .domain([new Date(csv[0][0]), new Date(csv[csv.length-1][0])])
+                .domain([new Date(caffeineData[0][0]), new Date(caffeineData[caffeineData.length-1][0])])
                 .range([0, this.w - 2 * sidePadding]);
 
-        this.valueScale = d3.scale.linear()
-        		.domain([500, 0])
-        		.range([0, this.h - bottomPadding]);
+        this.caffeineScale = d3.scale.linear()
+                .domain([500, 0])
+                .range([0, this.h - bottomPadding]);
+
+        this.alcoholScale = d3.scale.linear()
+                .domain([3, 0])
+                .range([0, this.h - bottomPadding]);
 
         var xAxis = d3.svg.axis()
             .scale(this.timeScale)
@@ -56,21 +74,46 @@ export default class LevelChart extends React.Component {
             .attr("font-size", 10)
             .attr("dy", "1em");
 
-        var yAxis = d3.svg.axis()
-            .scale(this.valueScale)
+        var yAxisCaffeine = d3.svg.axis()
+            .scale(this.caffeineScale)
             .orient('left')
-            //.ticks(d3.ti, 1)
-            .tickSize(this.w - sidePadding, 0);
-            //.tickFormat(d3.time.format('%H:%M'));
+            .tickSize(this.w - 2 * sidePadding, 0);
 
-        this.svg.append('g')
-            .attr('class', 'grid')
-            .attr('transform', 'translate(' + this.w + ', ' + -sidePadding + ')')
-            .call(yAxis)
-            .selectAll("text")
+        var yAxisCaffeineEntries = this.svg.append('g')
+            .attr('class', 'caffeineGrid')
+            .attr('transform', 'translate(' + (this.w - sidePadding) + ', ' + -bottomPadding + ')')
+            .call(yAxisCaffeine);
+
+        yAxisCaffeineEntries.selectAll("line")
+            .attr("stroke", caffeineColor)
+            .attr("opacity", gridOpacity);
+
+        yAxisCaffeineEntries.selectAll("text")
             .style("text-anchor", "middle")
             .attr('transform', 'translate(' + -10 + ', ' + -8 + ')')
-            .attr("fill", "#000")
+            .attr("fill", caffeineColor)
+            .attr("stroke", "none")
+            .attr("font-size", 10)
+            .attr("dy", "1em");
+
+        var yAxisAlcohol = d3.svg.axis()
+            .scale(this.alcoholScale)
+            .orient('right')
+            .tickSize(this.w - 2 * sidePadding, 0);
+
+        var yAxisAlcoholEntries = this.svg.append('g')
+            .attr('class', 'grid')
+            .attr('transform', 'translate(' + sidePadding + ', ' + -sidePadding + ')')
+            .call(yAxisAlcohol);
+
+        yAxisAlcoholEntries.selectAll("line")
+            .attr("stroke", alcoholColor)
+            .attr("opacity", gridOpacity);
+
+        yAxisAlcoholEntries.selectAll("text")
+            .style("text-anchor", "middle")
+            .attr('transform', 'translate(' + (-20 + sidePadding) + ', ' + -8 + ')')
+            .attr("fill", alcoholColor)
             .attr("stroke", "none")
             .attr("font-size", 10)
             .attr("dy", "1em");
@@ -79,35 +122,43 @@ export default class LevelChart extends React.Component {
             .x(function(d) { return this.timeScale(this.dateFormat.parse(d.time)); }.bind(this))
             .y(function(d) { return this.valueScale(d.alcohol); }.bind(this));/**/
 
-        var valueline = d3.svg.line()
+        var caffeineLine = d3.svg.line()
             .x(function(d) { return this.timeScale(new Date(d[0])) + sidePadding; }.bind(this))
-            .y(function(d) { return this.valueScale(d[1]) - bottomPadding; }.bind(this));
+            .y(function(d) { return this.caffeineScale(d[1]) - bottomPadding; }.bind(this));
+
+        var alcoholLine = d3.svg.line()
+            .x(function(d) { return this.timeScale(new Date(d[0])) + sidePadding; }.bind(this))
+            .y(function(d) { return this.alcoholScale(d[1]) - bottomPadding; }.bind(this));
 
         this.svg.append("path")
-          //.data(csv)
-          .attr("class", "line")
-          .attr("d", valueline(csv));
+          .attr("class", "caffeineLine")
+          .attr("d", caffeineLine(caffeineData))
+          .attr("stroke", caffeineColor);
 
-        var dots = this.svg.append('g')
+        this.svg.append("path")
+          .attr("class", "alcoholLine")
+          .attr("d", alcoholLine(alcoholData))
+          .attr("stroke", alcoholColor);
+
+        /*var dots = this.svg.append('g')
             .selectAll("rect")
             .data(csv)
             .enter();
 
-        var innerRects = dots.append("rect")
+        dots.append("rect")
             .attr("rx", 3)
             .attr("ry", 3)
             .attr("x", function(d) {
                 return this.timeScale(new Date(d[0])) + sidePadding - dotRadius / 2;
             }.bind(this))
             .attr("y", function(d, i) {
-                console.log(d[1]);
                 return this.valueScale(d[1]) - bottomPadding - dotRadius / 2;
                 //return this.valueScale(d.alcohol);
             }.bind(this))
             .attr("width", dotRadius)
             .attr("height", dotRadius)
             .attr("stroke", "none")
-            .attr("fill", "#ff0000");
+            .attr("fill", "#ff0000");*/
 
         this.forceUpdate();
 	}

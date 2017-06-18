@@ -1,17 +1,13 @@
 
-
-.grid .tick {
-    stroke: lightgrey;
-    opacity: 0.3;
-    shape-rendering: crispEdges;
+.grid{
+	stroke: lightgray;
 }
 
 .grid path {
     stroke-width: 0;
 }
 
-.line{
+.caffeineLine, .alcoholLine{
 	fill: none;
-	stroke: rgb(255, 0, 0);
 	stroke-width: 2;
 }
