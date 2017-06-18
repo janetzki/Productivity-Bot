@@ -45,6 +45,11 @@ var alcoholLUT = [
     ["vodka", require("./../images/wine.svg")]
 ];
 
+Date.prototype.addHours= function(h){
+    this.setHours(this.getHours()+h);
+    return this;
+}
+
 export default class LevelChart extends React.Component {
 
 	constructor(props){
@@ -62,6 +67,9 @@ export default class LevelChart extends React.Component {
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/chart',
             function(err, data) {
                 caffeineData = data.results;
+                caffeineData.forEach(function(d){
+                    d[0] = (new Date(d[0])).addHours(-2);
+                });
                 this.readCSV();
             }.bind(this)
         );
@@ -69,6 +77,9 @@ export default class LevelChart extends React.Component {
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/alcohol/chart',
             function(err, data) {
                 alcoholData = data.results;
+                alcoholData.forEach(function(d){
+                    d[0] = (new Date(d[0])).addHours(-2);
+                });
                 this.readCSV();
             }.bind(this)
         );
@@ -81,6 +92,9 @@ export default class LevelChart extends React.Component {
                         caffeineHistory.shift();
                     }
 
+                caffeineHistory.forEach(function(d){
+                    d.timestamp = (new Date(d.timestamp)).addHours(-2);
+                });
                 this.readCSV();
             }.bind(this)
         );
@@ -92,6 +106,9 @@ export default class LevelChart extends React.Component {
                     while((new Date(alcoholHistory[0].timestamp)) < (new Date(alcoholData[0]))){
                         alcoholHistory.shift();
                     }
+                alcoholHistory.forEach(function(d){
+                    d.timestamp = (new Date(d.timestamp)).addHours(-2);
+                });
                 //console.log(alcoholHistory);
                 this.readCSV();
             }.bind(this)
