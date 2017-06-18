@@ -45,10 +45,9 @@ def alcohol_for_drink(drink):
             return 0.0
 
 
-def alcohol_contents(drink, serving):
+def alcohol_contents(drink, serving, current_time):
     global alcohol_amount
     alc_vol = alcohol_for_drink(drink.lower())
-    current_time = datetime.now()
     amount = calculate_bac(alc_vol, serving)
     if len(alcoholic_drinks) > 0:
         last_element = alcoholic_drinks[-1]
