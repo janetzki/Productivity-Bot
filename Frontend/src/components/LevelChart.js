@@ -16,8 +16,19 @@ var caffeineHistory = [];
 var alcoholHistory = [];
 
 var gridOpacity = 0.2;
-var caffeineColor = "#c22";
+var caffeineColor = "#22c";
 var alcoholColor = "#2c2";
+
+var optimalCaffeineLevel = [100, 250];
+var optimalAlcoholLevel = [1.29, 1.38];
+
+/*var m = (optimalCaffeineLevel[0]-optimalCaffeineLevel[1])/(optimalAlcoholLevel[0]-optimalAlcoholLevel[1]);
+var n = optimalCaffeineLevel[0]-m*optimalAlcoholLevel[0];
+var alcoholRange = [0, 3];
+var caffeineRange = [m*alcoholRange[0]+n, m*alcoholRange[1]+n];*/
+
+var alcoholRange = [0, 3];
+var caffeineRange = [0, 500];
 
 var caffeineLUT = [    
     ["mate", require("./../images/mate.svg")],
@@ -39,7 +50,7 @@ export default class LevelChart extends React.Component {
 	constructor(props){
 		super(props);
 
-        //this.setInterval(this.tick, 1000);
+        this.setInterval(this.tick, 250);
 
         this.tick();
 
@@ -65,7 +76,6 @@ export default class LevelChart extends React.Component {
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/history',
             function(err, data) {
                 caffeineHistory = data.results;
-                console.log(data);
                 this.readCSV();
             }.bind(this)
         );
@@ -93,12 +103,36 @@ export default class LevelChart extends React.Component {
                 .range([0, this.w - 2 * sidePadding]);
 
         this.caffeineScale = d3.scale.linear()
-                .domain([500, 0])
-                .range([0, this.h - bottomPadding]);
+                .domain(caffeineRange)
+                .range([this.h - bottomPadding, 0]);
 
         this.alcoholScale = d3.scale.linear()
-                .domain([3, 0])
-                .range([0, this.h - bottomPadding]);
+                .domain(alcoholRange)
+                .range([this.h - bottomPadding, 0]);
+
+        /*this.svg.append("rect")
+            .attr("width", this.w - 2 * sidePadding)
+            .attr("height", this.alcoholScale(optimalAlcoholLevel[0])-this.alcoholScale(optimalAlcoholLevel[1]))
+            .attr("fill", "#0f0")
+            .attr("opacity", 0.1)
+            .attr("x", sidePadding)
+            .attr("y", this.alcoholScale(optimalAlcoholLevel[1]) - bottomPadding);*/
+
+        this.svg.append("rect")
+            .attr("width", this.w - 2 * sidePadding)
+            .attr("height", this.alcoholScale(optimalAlcoholLevel[0])-this.alcoholScale(optimalAlcoholLevel[1]))
+            .attr("fill", alcoholColor)
+            .attr("opacity", 0.1)
+            .attr("x", sidePadding)
+            .attr("y", this.alcoholScale(optimalAlcoholLevel[1]) - bottomPadding);
+
+        this.svg.append("rect")
+            .attr("width", this.w - 2 * sidePadding)
+            .attr("height", this.caffeineScale(optimalCaffeineLevel[0])-this.caffeineScale(optimalCaffeineLevel[1]))
+            .attr("fill", caffeineColor)
+            .attr("opacity", 0.1)
+            .attr("x", sidePadding)
+            .attr("y", this.caffeineScale(optimalCaffeineLevel[1]) - bottomPadding);
 
         var xAxis = d3.svg.axis()
             .scale(this.timeScale)
@@ -121,11 +155,11 @@ export default class LevelChart extends React.Component {
         var yAxisCaffeine = d3.svg.axis()
             .scale(this.caffeineScale)
             .orient('left')
-            .tickSize(this.w - 2 * sidePadding, 0);
+            .tickSize(10/*this.w - 2 * sidePadding/**/, 0);
 
         var yAxisCaffeineEntries = this.svg.append('g')
             .attr('class', 'caffeineGrid')
-            .attr('transform', 'translate(' + (this.w - sidePadding) + ', ' + -bottomPadding + ')')
+            .attr('transform', 'translate(' + (sidePadding) + ', ' + -bottomPadding + ')')
             .call(yAxisCaffeine);
 
         yAxisCaffeineEntries.selectAll("line")
@@ -134,7 +168,7 @@ export default class LevelChart extends React.Component {
 
         yAxisCaffeineEntries.selectAll("text")
             .style("text-anchor", "middle")
-            .attr('transform', 'translate(' + -10 + ', ' + -8 + ')')
+            .attr('transform', 'translate(' + -8 + ', ' + -8 + ')')
             .attr("fill", caffeineColor)
             .attr("stroke", "none")
             .attr("font-size", 10)
@@ -143,11 +177,11 @@ export default class LevelChart extends React.Component {
         var yAxisAlcohol = d3.svg.axis()
             .scale(this.alcoholScale)
             .orient('right')
-            .tickSize(this.w - 2 * sidePadding, 0);
+            .tickSize(10/*this.w - 2 * sidePadding/**/, 0);
 
         var yAxisAlcoholEntries = this.svg.append('g')
             .attr('class', 'grid')
-            .attr('transform', 'translate(' + sidePadding + ', ' + -sidePadding + ')')
+            .attr('transform', 'translate(' + (this.w - sidePadding) + ', ' + -sidePadding + ')')
             .call(yAxisAlcohol);
 
         yAxisAlcoholEntries.selectAll("line")
@@ -227,7 +261,7 @@ export default class LevelChart extends React.Component {
         this.svg.append("rect")
             .attr("width", 2)
             .attr("height", this.h - 2 * bottomPadding)
-            .attr("fill", "#00f")
+            .attr("fill", "#f4b342")
             .attr("x", this.timeScale(Date.now()) + sidePadding)
             .attr("y", 0);
 
