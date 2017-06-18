@@ -1,4 +1,5 @@
 from datetime import datetime
+import csv
 
 alcohol_amount = 0.0
 profile = {}
@@ -26,7 +27,9 @@ def reduced_bac(bac, seconds):
 
 def alcohol_for_drink(drink):
     drink_alc_vol = {}
-    drink_alc_vol["bier"] = 0.05
+    with open('backend/alcohol_contents.csv', newline='\n') as csvfile:
+        for row in csv.reader(csvfile, delimiter=',', quotechar='"'):
+            drink_alc_vol[row[0].lower()] = float(row[1])
     amount = drink_alc_vol.get(drink)
     if amount is not None:
         return float(amount)
