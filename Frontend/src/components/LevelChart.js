@@ -19,7 +19,7 @@ var gridOpacity = 0.2;
 var caffeineColor = "#22c";
 var alcoholColor = "#2c2";
 
-var optimalCaffeineLevel = [100, 250];
+var optimalCaffeineLevel = [100, 200];
 var optimalAlcoholLevel = [1.29, 1.38];
 
 /*var m = (optimalCaffeineLevel[0]-optimalCaffeineLevel[1])/(optimalAlcoholLevel[0]-optimalAlcoholLevel[1]);
