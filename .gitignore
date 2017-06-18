@@ -1,4 +1,6 @@
 # Project files
 .idea/
 *.iml
+Frontend/node_modules
+*.iml
 __pycache__
