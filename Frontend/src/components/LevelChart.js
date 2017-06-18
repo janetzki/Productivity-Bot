@@ -8,13 +8,29 @@ import './LevelChart.css'
 
 var sidePadding = 30;
 var bottomPadding = 30;
-var dotRadius = 4;
+var iconSize = 20;
 var caffeineData = [];
 var alcoholData = [];
+
+var caffeineHistory = [];
+var alcoholHistory = [];
 
 var gridOpacity = 0.2;
 var caffeineColor = "#c22";
 var alcoholColor = "#2c2";
+
+var caffeineLUT = [    
+    ["mate", require("./../images/mate.svg")]
+];
+var alcoholLUT = [
+    ["bier", require("./../images/beer.svg")],
+    ["wein", require("./../images/wine.svg")],
+    ["sekt", require("./../images/wine.svg")],
+    ["likör", require("./../images/wine.svg")],
+    ["rum", require("./../images/wine.svg")],
+    ["schnaps", require("./../images/wine.svg")],
+    ["wodka", require("./../images/wine.svg")]
+];
 
 export default class LevelChart extends React.Component {
 
@@ -28,7 +44,7 @@ export default class LevelChart extends React.Component {
 	}
 
     tick(){
-        //console.log("tick");
+        console.log("tick");
 
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/chart',
             function(err, data) {
@@ -44,19 +60,25 @@ export default class LevelChart extends React.Component {
             }.bind(this)
         );
         
+        this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/caffeine/history',
+            function(err, data) {
+                caffeineHistory = data.results;
+                this.readCSV();
+            }.bind(this)
+        );
+        
         this.getJSON('https://hpi.de/naumann/sites/ingestion/hackhpi/alcohol/history',
             function(err, data) {
-                //alcoholData = data.results;
-                //this.readCSV();
-                //console.log(data);
+                alcoholHistory = data.results;
+                this.readCSV();
             }.bind(this)
         );
     }
 
 	readCSV(){
 
-		this.w = this.refs.chartContainer.offsetWidth;
-		this.h = 300;
+		this.w = this.refs.chartContainer.offsetWidth-2;
+		this.h = this.refs.chartContainer.offsetHeight-20;
 
         d3.selectAll("svg > *").remove();
         var chart = this.refs.levelChart;
@@ -137,10 +159,6 @@ export default class LevelChart extends React.Component {
             .attr("font-size", 10)
             .attr("dy", "1em");
 
-        /*var valueline = d3.svg.line()
-            .x(function(d) { return this.timeScale(this.dateFormat.parse(d.time)); }.bind(this))
-            .y(function(d) { return this.valueScale(d.alcohol); }.bind(this));/**/
-
         var caffeineLine = d3.svg.line()
             .x(function(d) { return this.timeScale(new Date(d[0])) + sidePadding; }.bind(this))
             .y(function(d) { return this.caffeineScale(d[1]) - bottomPadding; }.bind(this));
@@ -159,25 +177,49 @@ export default class LevelChart extends React.Component {
           .attr("d", alcoholLine(alcoholData))
           .attr("stroke", alcoholColor);
 
-        /*var dots = this.svg.append('g')
+        var caffeineIcons = this.svg.append('g')
             .selectAll("rect")
-            .data(csv)
+            .data(caffeineHistory)
             .enter();
 
-        dots.append("rect")
-            .attr("rx", 3)
-            .attr("ry", 3)
+        caffeineIcons.append("image")
+            .attr("xlink:href", function(d){
+                    var src = "";
+                    caffeineLUT.forEach(function(lutEntry){
+                        if(lutEntry[0] == d.drink) src = lutEntry[1];
+                    }.bind(this))
+                    return src;
+                }.bind(this))
             .attr("x", function(d) {
-                return this.timeScale(new Date(d[0])) + sidePadding - dotRadius / 2;
+                return this.timeScale(new Date(d.timestamp)) + sidePadding - iconSize / 2;
             }.bind(this))
             .attr("y", function(d, i) {
-                return this.valueScale(d[1]) - bottomPadding - dotRadius / 2;
-                //return this.valueScale(d.alcohol);
+                return this.caffeineScale(d.total_caffeine) - bottomPadding - iconSize / 2;
             }.bind(this))
-            .attr("width", dotRadius)
-            .attr("height", dotRadius)
-            .attr("stroke", "none")
-            .attr("fill", "#ff0000");*/
+            .attr("width", iconSize)
+            .attr("height", iconSize);
+
+        var alcoholIcons = this.svg.append('g')
+            .selectAll("rect")
+            .data(alcoholHistory)
+            .enter();
+
+        alcoholIcons.append("image")
+            .attr("xlink:href", function(d){
+                    var src = "";
+                    alcoholLUT.forEach(function(lutEntry){
+                        if(lutEntry[0] == d.drink) src = lutEntry[1];
+                    }.bind(this))
+                    return src;
+                }.bind(this))
+            .attr("x", function(d) {
+                return this.timeScale(new Date(d.timestamp)) + sidePadding - iconSize / 2;
+            }.bind(this))
+            .attr("y", function(d, i) {
+                return this.alcoholScale(d.total_alcohol) - bottomPadding - iconSize / 2;
+            }.bind(this))
+            .attr("width", iconSize)
+            .attr("height", iconSize);
 
         this.forceUpdate();
 	}
@@ -197,11 +239,11 @@ export default class LevelChart extends React.Component {
         xhr.send();
     }
 
-
+    //<svg id="levelChart" ref="levelChart"  width={ this.w } height={ this.h } />
 	render() {
         return (
             <div id="chartContainer" ref="chartContainer">
-            	<svg id="levelChart" ref="levelChart"  width={ this.w } height={ this.h } />
+                <svg id="levelChart" ref="levelChart"  width={ this.w } height={ this.h } />
             </div>
         );
     }

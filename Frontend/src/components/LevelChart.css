@@ -11,3 +11,10 @@
 	fill: none;
 	stroke-width: 2;
 }
+
+#chartContainer{
+	position: absolute;
+	top: 50px;
+	bottom: 0;
+	width: 100%;
+}
